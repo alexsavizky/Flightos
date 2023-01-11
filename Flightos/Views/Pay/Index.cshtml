@@ -1,0 +1,225 @@
+﻿@model Flightos.Models.PayTemp
+
+@{
+    ViewBag.Title = "Index";
+    if (Session["admin"] != null)
+    {
+        Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+    else if (Session["username"] != null)
+    {
+        Layout = "~/Views/Shared/UserLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/DefaultLayout.cshtml";
+    }
+}
+@* style="border-collapse: separate; display: block; background: rgb(101 154 232); border-radius: 25px; width:50%; padding-left:10px; padding-top:10px;"*@
+@{
+    string ddate = Model.flight.depdate.ToString("dd/M/yyyy");
+    string adate = Model.flight.arrivedate.ToString("dd/M/yyyy");
+    string dtime = Model.flight.depdate.ToString("HH:mm");
+    string atime = Model.flight.arrivedate.ToString("HH:mm");
+    
+    <h2>Pay</h2>
+    <body style="text-align:left;">
+        <div style="border-collapse: separate; display: block; background: rgb(101 154 232); border-radius: 25px; width:50%;">
+            <div class="col">
+
+                <dl class="dl-horizontal" style="padding-top:10px;">
+                    <dd>
+                        <h3><b> Hello @Html.DisplayFor(model => Model.users.fname) Your Flight Details:</b></h3>
+                    </dd>
+
+                    <dd>
+                        @Html.DisplayFor(model => Model.flight.from)
+                        <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                        @Html.DisplayFor(model => Model.flight.to)
+                    </dd>
+
+                    <dd>
+                        Deaparture: @Html.DisplayFor(model => ddate)
+                    </dd>
+                    <dd>
+                        @Html.DisplayFor(model => dtime)
+                    </dd>
+                    <dd>
+                        Arrive: @Html.DisplayFor(model => adate)
+                    </dd>
+                    <dd>
+                        @Html.DisplayFor(model => atime)
+                    </dd>
+                    @{
+                        if (Model.flightreturn != null)
+                        {
+                            int days = int.Parse((Model.flightreturn.arrivedate - Model.flight.depdate).Days.ToString());
+                            string ddate2 = Model.flightreturn.depdate.ToString("dd/M/yyyy");
+                            string adate2 = Model.flightreturn.arrivedate.ToString("dd/M/yyyy");
+                            string dtime2 = Model.flightreturn.depdate.ToString("HH:mm");
+                            string atime2 = Model.flightreturn.arrivedate.ToString("HH:mm");
+                            <dd>
+                                <h3 >
+                                    Return Flight
+                                </h3>
+                            </dd>
+
+                            <dd>
+                                @Html.DisplayFor(model => Model.flightreturn.from)
+                                <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                                @Html.DisplayFor(model => Model.flightreturn.to)
+                            </dd>
+
+                            <dd>
+                                Deaparture: @Html.DisplayFor(model => ddate2)
+                            </dd>
+                            <dd>
+                                @Html.DisplayFor(model => dtime2)
+                            </dd>
+                            <dd>
+                                Arrive: @Html.DisplayFor(model => adate2)
+                            </dd>
+                            <dd>
+                                @Html.DisplayFor(model => atime)
+                            </dd>
+                            <dd>
+                                <h4 style=" color:rgb(255, 255, 255)">
+                                    @Html.DisplayFor(model => days) days trip
+                                </h4>
+                            </dd>
+                        }
+                    }
+
+
+                </dl>
+                <hr />
+            </div>
+            @using (Html.BeginForm("Index2", "Pay", FormMethod.Post))
+            {
+
+                <div class="row " id="items" style="padding-left:20px; padding-top:10px;">
+                    <table>
+                        <tr class="col">
+                            <td>
+                                <label for="ccn">Credit Card Number:</label>
+                            </td>
+                            <td>
+                                <input name="ccn" id="ccn" type="tel" inputmode="numeric" autocomplete="cc-number" maxlength="16" minlength="16" placeholder="xxxx xxxx xxxx xxxx" required>
+                            </td>
+                        </tr>
+                        <tr class="col">
+                            <td>
+                                <label for="cvv">CCV:</label>
+                            </td>
+                            <td>
+                                <input name="cvv" id="cvv" type="tel" inputmode="numeric" autocomplete="cvv-number" maxlength="3" minlength="3" placeholder="xxx" required>
+                            </td>
+                        </tr>
+                        <input id="username" name="username" value="@Model.users.ID" style="display:none;">
+                        <input id="flightid" name="flightid" value="@Model.flight.flightnum" style="display:none;">
+                        <tr>
+                            <td>
+                                <label for="expireMM">Credit Card Validity:</label>
+                            </td>
+                            <td>
+                                <select name='expireMM' id='expireMM' required>
+                                    <option value=''>Month</option>
+                                    <option value='01'>January</option>
+                                    <option value='02'>February</option>
+                                    <option value='03'>March</option>
+                                    <option value='04'>April</option>
+                                    <option value='05'>May</option>
+                                    <option value='06'>June</option>
+                                    <option value='07'>July</option>
+                                    <option value='08'>August</option>
+                                    <option value='09'>September</option>
+                                    <option value='10'>October</option>
+                                    <option value='11'>November</option>
+                                    <option value='12'>December</option>
+                                </select>
+                                <select name='expireYY' id='expireYY' required>
+                                    <option value=''>Year</option>
+                                    <option value='23'>2023</option>
+                                    <option value='24'>2024</option>
+                                    <option value='25'>2025</option>
+                                    <option value='26'>2026</option>
+                                    <option value='27'>2027</option>
+                                </select>
+                                <input class="inputCard" type="hidden" name="expiry" id="expiry" maxlength="4" />
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            @{if (Model.flightreturn != null)
+                                {
+                                    int minseats = Math.Min(Model.flightreturn.seats, Model.flight.seats);
+                                    int combineprice = Model.flight.price + Model.flightreturn.price;
+                                    <td class="col">
+                                        <label for="num of tickets">How many tickets:</label>
+                                    </td>
+                                    <td class="col">
+                                        <input type="number" id="num of tickets" name="num of tickets" value="1" min="1" max="@minseats">
+                                    </td>
+
+                                    <input id="flightid2" name="flightid2" value="@Model.flightreturn.flightnum" style="display:none;">
+                                    <tr>
+                                        <td>
+                                            <label>Total price:$</label>
+                                            <label for="price" id="labelField">@combineprice</label>
+                                        </td>
+                                    </tr>
+                                    <script>
+                                            document.getElementById("num of tickets").addEventListener("input", function () {
+                                                var inputValue = this.value * @combineprice;
+                                                document.getElementById("labelField").innerHTML = inputValue;
+                                            });
+                                    </script>
+                                }
+                                else
+                                {
+                                    <td class="col">
+                                        <label for="num of tickets">How many tickets:</label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="num of tickets" name="num of tickets" value="1" min="1" max="@Model.flight.seats">
+                                    </td>
+                                    <td class="col">
+                                        <label for="num of seats" style="color:rgb(84, 79, 79)">only @Html.DisplayFor(model => model.flight.seats) seats left</label>
+                                    </td>
+                                    <input id="flightid2" name="flightid2" value="null" style="display:none;">
+
+                                <tr>
+                                    <td>
+                                        <label>Total price:$</label>
+                                        <label for="price" id="labelField">@Model.flight.price </label>
+                                    </td>
+                                </tr>
+                                <script>
+                                    document.getElementById("num of tickets").addEventListener("input", function() {
+                                    var inputValue = this.value * @Model.flight.price;
+                                    document.getElementById("labelField").innerHTML = inputValue;
+                                    });
+                                </script>
+                            }
+                            }
+                            </tr>
+                            <tr>
+                                <td style="padding-left:10px;">
+                                    <input type="checkbox" id="issave" name="issave" value="true">
+                                    <label>Save your payment info</label>
+                                </td>
+                            </tr>
+                            <tr class="col mt-4" style="text-align:center;">
+                                <td>
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-success">Buy Ticket &raquo;</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+        </div>
+    </body>
+
+}

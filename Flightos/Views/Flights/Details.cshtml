@@ -1,0 +1,63 @@
+﻿@model Flightos.Models.Flights
+@{
+    if (Session["admin"] != null)
+    {
+        Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+    else if (Session["username"] != null)
+    {
+        Layout = "~/Views/Shared/UserLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/DefaultLayout.cshtml";
+    }
+}
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Flights</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.flightcompany)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.flightcompany)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.seats)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.seats)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.from)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.from)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.to)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.to)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.flightnum }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

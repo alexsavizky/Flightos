@@ -1,0 +1,192 @@
+﻿@model List<Tuple<Flightos.Models.Flights, Flightos.Models.Flights>>
+
+@{
+    ViewBag.Title = "submit2";
+}
+@{
+    ViewBag.Title = "Index";
+    if (Session["admin"] != null)
+    {
+        Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+    else if (Session["username"] != null)
+    {
+        Layout = "~/Views/Shared/UserLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/DefaultLayout.cshtml";
+    }
+}
+<h2>submit2</h2>
+
+
+<style>
+    .row {
+        padding: 10px;
+        padding-left: 20px;
+    }
+
+    .column {
+        float: left;
+        width: 33.33%;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
+@foreach (var item in Model)
+{
+    <br />
+    int seats = Math.Min(item.Item1.seats, item.Item2.seats);
+    int price = item.Item2.price + item.Item1.price;
+    int days = int.Parse((item.Item2.arrivedate - item.Item1.depdate).Days.ToString());
+    string depdate1 = item.Item1.depdate.ToString("dd/M/yyyy");
+    string arivedate1 = item.Item1.arrivedate.ToString("dd/M/yyyy");
+    string deptime1 = item.Item1.depdate.ToString("HH:mm");
+    string arivetime1 = item.Item1.arrivedate.ToString("HH:mm");
+    string depdate2 = item.Item2.depdate.ToString("dd/M/yyyy");
+    string arivedate2 = item.Item2.arrivedate.ToString("dd/M/yyyy");
+    string deptime2 = item.Item2.depdate.ToString("HH:mm");
+    string arivetime2 = item.Item2.arrivedate.ToString("HH:mm");
+    <div class="card" style="display:block;border-radius:25px; background:rgb(101,154,232);">
+        <table style="display:table;width:100%;">
+            <tr>
+                <div class="row" style="padding-left : 20px">
+                <td class="column">
+                    <div class="card">
+                        <h3 class="card-title" style="padding-left: 20px; text-align: center">
+                            Flight Company
+                        </h3>
+                        <h3 style="padding-left: 20px; text-align: center; color:white">
+                            @Html.DisplayFor(modelItem => item.Item1.flightcompany)
+                        </h3>
+                    </div>
+                </td>
+
+                <td class="column" style="flex:auto">
+                    <div class="card">
+                        <h3 class="card-title" style="text-align: center; padding-left: 5px">
+                            Flight Details
+                        </h3>
+                        <h4 class="card-title" style="padding-left: 5px ">
+                            <div class=" row" style="text-align:center">
+                                <p style="text-align: center">
+                                    @Html.DisplayFor(modelItem => item.Item1.from)
+                                    <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                                    @Html.DisplayFor(modelItem => item.Item1.to)
+                                </p>
+
+                            </div>
+                        </h4>
+                        <div class=" row" style="text-align:center">
+                            <p style="text-align: center">
+                                @Html.DisplayFor(modelItem => depdate1)
+                                <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                                @Html.DisplayFor(modelItem => arivedate1)
+                            </p>
+                        </div>
+                        <div class=" row" style="text-align:center">
+                            @Html.DisplayFor(modelItem => deptime1)
+                            <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                            @Html.DisplayFor(modelItem => arivetime1)
+                        </div>
+                    </div>
+                </td>
+                <td class="column">
+                    <div class="card">
+
+                        <h1 class="card-title" style="padding-left: 40px; color:rgb(255, 255, 255)" ;>
+                            $ @Html.DisplayFor(modelItem => price)
+                        </h1>
+                        <h1 class="card-title" style="padding-left: 40px; color:rgb(255, 255, 255)" ;>
+                            @days days trip
+                        </h1>
+
+                        <div style=" padding-left: 45px;padding-top:20px">
+                            @{
+                                if (Session["username"] != null)
+                                {
+                                    @Html.ActionLink("Buy Ticket", "Index", "Pay", new { username = Session["username"].ToString(), flight_id = item.Item1.flightnum, flight_id2 = item.Item2.flightnum }, new { @class = "btn btn-primary" })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("sign in", "Index", "Login", "", new { @class = "btn btn-primary" })
+                                    <p class="card-text">to buy a ticket</p>
+                                }
+                            }
+                        </div>
+                        <h4 class="card-title" style="padding-left: 40px; color:rgb(255, 255, 255)" ;>
+                            @seats seats left
+                        </h4>
+                    </div>
+                </td>
+    </div>
+    </tr>
+    </table>
+    <table style="display:table;width:100%;">
+        <tr>
+            <div class="row" style="padding-left : 20px">
+            <td class="column">
+                <div class="card">
+                    <h3 class="card-title" style="padding-left: 20px; text-align: center">
+                        Flight Company
+                    </h3>
+                    <h3 style="padding-left: 20px; text-align: center; color:white">
+                        @Html.DisplayFor(modelItem => item.Item1.flightcompany)
+                    </h3>
+                </div>
+            </td>
+
+            <td class="column" style="flex:auto">
+                <div class="card">
+                    <h3 class="card-title" style="text-align: center; padding-left: 5px">
+                        Flight Details
+                    </h3>
+                    <h4 class="card-title" style="padding-left: 5px ">
+                        <div class=" row" style="text-align:center">
+                            <p style="text-align: center">
+                                @Html.DisplayFor(modelItem => item.Item2.from)
+                                <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                                @Html.DisplayFor(modelItem => item.Item2.to)
+                            </p>
+
+                        </div>
+                    </h4>
+                    <div class=" row" style="text-align:center">
+                        <p style="text-align: center">
+                            @Html.DisplayFor(modelItem => depdate2)
+                            <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                            @Html.DisplayFor(modelItem => arivedate2)
+                        </p>
+                    </div>
+                    <div class=" row" style="text-align:center">
+                        @Html.DisplayFor(modelItem => deptime2)
+                        <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                        @Html.DisplayFor(modelItem => arivetime2)
+                    </div>
+                </div>
+            </td>
+            <td class="column" style="padding-left:50px; padding-top:100px;">
+                @if (seats < 50)
+                {
+                    <div style="padding-left:30px">
+                        <img src="~/Images/icons8-popular-man-50.png" width="25" height="25" />
+                    </div>
+                    <h5><b>Popular flight</b></h5>
+
+                }
+            </td>
+
+            </div>
+        </tr>
+    </table>
+    </div>
+    <br />
+
+
+}

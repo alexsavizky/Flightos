@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Flightos.Models.Flights>
+@{
+    if (Session["admin"] != null)
+    {
+        Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+    else if (Session["username"] != null)
+    {
+        Layout = "~/Views/Shared/UserLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/DefaultLayout.cshtml";
+    }
+}
+
+<style>
+    .row {
+        padding: 10px;
+        padding-left: 20px;
+    }
+
+    .column {
+        float: left;
+        width: 33.33%;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
+@foreach (var item in Model)
+{
+    <br />
+    string depdate = item.depdate.ToString("dd/M/yyyy");
+    string arivedate = item.arrivedate.ToString("dd/M/yyyy");
+    string deptime = item.depdate.ToString("HH:mm");
+    string arivetime = item.arrivedate.ToString("HH:mm");
+    string date = item.depdate.ToString("dd/M/yyyy") + " - > " + item.arrivedate.ToString("dd/M/yyyy");
+    string time = item.depdate.ToString("HH:mm") + " - > " + item.arrivedate.ToString("HH:mm");
+    <div class="card" style="display:block;border-radius:25px; background:rgb(101,154,232);">
+        <table style="display:table;width:100%;">
+            <tr>
+                <div class="row" style="padding-left : 20px">
+                <td class="column">
+                    <div class="card">
+                        <h3 class="card-title" style="padding-left: 20px; text-align: center">
+                            Flight Company
+                        </h3>
+                        <h3 style="padding-left: 20px; text-align: center; color:white">
+                            @Html.DisplayFor(modelItem => item.flightcompany)
+                        </h3>
+                    </div>
+                </td>
+
+                <td class="column" style="flex:auto">
+                    <div class="card">
+                        <h3 class="card-title" style="text-align: center; padding-left: 5px">
+                            Flight Details
+                        </h3>
+                        <h4 class="card-title" style="padding-left: 5px ">
+                            <div class=" row" style="text-align:center">
+                                <p style="text-align: center">
+                                    @Html.DisplayFor(modelItem => item.from)
+                                    <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                                    @Html.DisplayFor(modelItem => item.to)
+                                </p>
+
+                            </div>
+                        </h4>
+                        <div class=" row" style="text-align:center">
+                            <p style="text-align: center">
+                                @Html.DisplayFor(modelItem => depdate)
+                                <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                                @Html.DisplayFor(modelItem => arivedate)
+                            </p>
+                        </div>
+                        <div class=" row" style="text-align:center">
+                            @Html.DisplayFor(modelItem => deptime)
+                            <img src="~/Images/output-onlinepngtools.png" width="30" height="30" />
+                            @Html.DisplayFor(modelItem => arivetime)
+                        </div>
+                    </div>
+                </td>
+                <td class="column">
+                    <div class="card">
+                        <h1 class="card-title" style="padding-left: 40px; color:rgb(255, 255, 255)" ;>
+                            $ @Html.DisplayFor(modelItem => item.price)
+                        </h1>
+                        <div style=" padding-left: 45px;padding-top:20px">
+                            @{
+                                if (Session["username"] != null)
+                                {
+                                    @Html.ActionLink("Buy Ticket", "Index", "Pay", new { username = Session["username"].ToString(), flight_id = item.flightnum, flight_id2 = "null" }, new { @class = "btn btn-primary" })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("sign in", "Index", "Login", "", new { @class = "btn btn-primary" })
+                                    <p class="card-text">to buy a ticket</p>
+                                }
+                            }
+                            <h4 class="card-title" style="color:rgb(255, 255, 255);" >
+                                @item.seats seats left
+                            </h4>
+
+                        </div>
+                    </div>
+                    @if (item.seats < 50)
+                    {
+                        <div style="padding-left:40px">
+                            <div style="padding-left:35px">
+                                <img src="~/Images/icons8-popular-man-50.png" width="25" height="25" />
+                            </div>
+                            <h5><b>Popular flight</b></h5>
+                        </div>
+                    }
+                </td>
+    </div>
+    </tr>
+    </table>
+    </div>
+    <br />
+
+
+}

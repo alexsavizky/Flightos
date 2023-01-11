@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    @*<style>
+            html {
+                background-image: url('../../Images/WhatsApp Image 2023-01-11 at 14.55.34.jpeg');
+            }
+        </style>*@
+</head>
+
+<body>
+    @model IEnumerable<Flightos.Models.Flights>
+    @{
+        ViewBag.Title = "Home Page";
+
+        if (Session["admin"] != null)
+        {
+            Layout = "~/Views/Shared/AdminLayout.cshtml";
+        }
+        else if (Session["username"] != null)
+        {
+            Layout = "~/Views/Shared/UserLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/DefaultLayout.cshtml";
+        }
+        HashSet<String> toset = new HashSet<string>();
+        HashSet<String> fromset = new HashSet<string>();
+        int maxprice = Model.OrderByDescending(o => o.price).FirstOrDefault().price * 2;
+
+        foreach (var item in Model)
+        {
+            toset.Add(item.to);
+            fromset.Add(item.from);
+        }
+    }
+    <br />
+
+    @using (Html.BeginForm("submit", "Home", FormMethod.Post))
+    {
+        @Html.Raw(TempData["msg"])
+        <table class="row " id="items" style="border-spacing: 15px; border-collapse: separate; display: block; background: rgb(101 154 232); border-radius: 25px; height:80%;">
+            <caption style="text-align:center;"><img src="~/Images/coollogo_com-10531263.png" height="80" width="240" /></caption>
+            <tr class="col">
+                <td>
+                    <label for="from">From:</label>
+                </td>
+                <td>
+                    <select name="from" id="from" class="form-control me-2">
+                        <option value="None"> </option>
+                        @foreach (string item in fromset)
+                        {
+                            <option value="@item"> @Html.DisplayFor(modelItem => item)</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <label for="to">To:</label>
+                </td>
+                <td>
+                    <select name="to" id="to" class="form-control me-2">
+                        <option value="None"> </option>
+                        @foreach (string item in toset)
+                        {
+                            <option value="@item"> @Html.DisplayFor(modelItem => item)</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <label for="sortBy">Sort by:</label>
+                </td>
+                <td>
+                    <select name="sortBy" id="sortBy" class="form-control me-2">
+                        <option value="None"> </option>
+                        <option value="price increase">Price increase</option>
+                        <option value="price decrease">Price decrease</option>
+                        <option value="most popular">Most popular</option>
+
+                    </select>
+                </td>
+                <td>
+                    <label for="MinPrice">Min Price:</label>
+                </td>
+                <td>
+                    <input type="number" id="MinPrice" name="MinPrice" value="0" min="0" max="@maxprice">
+                </td>
+                <td>
+                    <label for="MaxPrice">Max Price:</label>
+                </td>
+                <td>
+                    <input type="number" id="MaxPrice" name="MaxPrice" value="@maxprice" min="0" max="@maxprice">
+                </td>
+            </tr>
+
+            @{
+                string date = DateTime.Today.Year.ToString();
+                date += "-" + DateTime.Today.Month.ToString() + "-" + DateTime.Today.Day.ToString();
+            }
+            <tr>
+                <td>
+                    <label for="start">Start date:</label>
+                </td>
+                <td>
+                    <input type="date" id="fromdate" name="fromdate" value=@date>
+                </td>
+                <td>
+                    <label for="end">End date:</label>
+                </td>
+                <td>
+                    <input type="date" id="todate" name="todate" value=@date>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" id="twoway" name="twoway" value="true">
+                    <label>Two way flight?</label>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-success">Search &raquo;</button>
+                </td>
+            </tr>
+        </table>
+    }
+
+
+    <img src="~/Images/WhatsApp Image 2023-01-11 at 14.55.34.jpeg" width="1135px" style="text-align:center" />
+
+</body>
+</html>

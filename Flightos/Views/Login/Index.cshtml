@@ -1,0 +1,150 @@
+﻿@model Flightos.Models.Users
+
+@{
+    ViewBag.Title = "Login";
+    if (Session["admin"] != null)
+    {
+        Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+    else if (Session["username"] != null)
+    {
+        Layout = "~/Views/Shared/UserLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/DefaultLayout.cshtml";
+    }
+}
+
+
+<!doctype html>
+<html lang="en">
+
+<body>
+    <main class="form-signin w-100 m-auto" id="login">
+        <h1 class="h3 mb-3 fw-normal fw-bold"> Sign In</h1>
+        <table>
+            @using (Html.BeginForm("Login", "Login", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.Raw(TempData["msg"])
+
+                <tr class="form-floating">
+                    <td>
+                        <label for="loginID">Username:</label>
+                    </td>
+                    <td>
+                        @Html.TextBox("loginUsername", "", htmlAttributes: new { @class = "form-control", placeholder = "Username", type = "text", required = "required" })
+                    </td>
+                </tr>
+
+                <tr class="form-floating">
+                    <td>
+                        <label for="loginPassword">Password:</label>
+                    </td>
+                    <td>
+                        @Html.Password("loginPassword", "", htmlAttributes: new { @class = "form-control", placeholder = "Password", type = "password", required = "required" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                        <button class="btn btn-warning text-white" type="button" onclick="register()">Register</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.ActionLink("Back to homepage", "Index", "Home", null, new { @class = "btn btn-secondary" })
+                    </td>
+                </tr>
+            }
+        </table>
+    </main>
+
+
+    <main class="form-signin w-100 m-auto" id="register">
+        <h1 class="h3 mb-3 fw-normal fw-bold"> Register </h1>
+        <table>
+            @using (Html.BeginForm("Register", "Login", FormMethod.Post))
+            {
+
+                @Html.AntiForgeryToken()
+                <tr class="form-floating">
+                    <td>
+                        <label for="registerID">ID</label>
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.ID, new { htmlAttributes = new { @class = "form-control", placeholder = "ID", type = "number" , required = "required" } })
+                        @Html.ValidationMessageFor(model => model.ID, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+                <tr class="form-floating">
+                    <td>
+                        <label for="registerName">Name</label>
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.fname, new { htmlAttributes = new { @class = "form-control", placeholder = "First Name", type = "text", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.fname, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+                <tr class="form-floating">
+                    <td>
+                        <label for="registerfName">Last Name</label>
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.lname, new { htmlAttributes = new { @class = "form-control", placeholder = "Last Name", type = "text" ,required = "required" } })
+                        @Html.ValidationMessageFor(model => model.lname, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+
+                <tr class="form-floating">
+                    <td>
+                        <label for="regiterUsername">Username</label>
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control", placeholder = "Username", type = "text", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+
+                <tr class="form-floating">
+                    <td>
+                        <label for="loginPassword">Password</label>
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control", placeholder = "Password", type = "password", required = "requierd" } })
+                        @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+                        <button class="btn btn-warning text-white" type="button" onclick="login()">Login</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.ActionLink("Back to main page", "Index", "Home", null, new { @class = "btn btn-secondary" })
+                    </td>
+                </tr>
+            }
+        </table>
+    </main>
+</body>
+
+</html>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script>
+    login();
+    function register() {
+        $("#login").hide();
+        $("#register").show();
+    }
+    function login() {
+        $("#login").show();
+        $("#register").hide();
+    }
+</script>
